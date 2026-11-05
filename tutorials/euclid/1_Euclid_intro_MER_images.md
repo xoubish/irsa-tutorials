@@ -1,25 +1,25 @@
 ---
+authors:
+- name: Tiffany Meshkat
+- name: Anahita Alavi
+- name: Anastasia Laity
+- name: Andreas Faisst
+- name: Brigitta Sipőcz
+- name: Dan Masters
+- name: Harry Teplitz
+- name: Jaladh Singhal
+- name: Shoubaneh Hemmati
+- name: Vandana Desai
 jupytext:
   text_representation:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.17.2
+    jupytext_version: 1.19.6
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
-authors:
-  - name: Tiffany Meshkat
-  - name: Anahita Alavi
-  - name: Anastasia Laity
-  - name: Andreas Faisst
-  - name: Brigitta Sipőcz
-  - name: Dan Masters
-  - name: Harry Teplitz
-  - name: Jaladh Singhal
-  - name: Shoubaneh Hemmati
-  - name: Vandana Desai
 ---
 
 # Euclid DR1: MER Mosaics
@@ -59,11 +59,11 @@ By the end of this tutorial, you will:
 Euclid launched in July 2023 as a European Space Agency (ESA) mission with involvement by NASA.
 The primary science goals of Euclid are to better understand the composition and evolution of the dark Universe.
 The Euclid mission is providing space-based imaging and spectroscopy as well as supporting ground-based imaging to achieve these primary goals.
-These data will be archived by multiple global repositories, including IRSA, where they will support transformational work in many areas of astrophysics.
+These data are archived by multiple global repositories, including IRSA, where they will support transformational work in many areas of astrophysics.
 
-Euclid Data Release 1 (DR1) comprises about 1900 sq deg of imaging, spectroscopy, and catalogs from the Euclid Wide Survey (EWS), which will eventually cover about 14,000 sq deg, and from the Euclid Deep Survey (EDS), which covers about 63 sq deg in the three Euclid Deep Fields (North, South, and Fornax).
+Euclid Data Release 1 (DR1) comprises about 1900 sq deg of imaging, spectroscopy, and catalogs from the Euclid Wide Survey (EWS), which will eventually cover about 14,000 sq deg, and from the Euclid Deep Survey (EDS), which covers about 53 sq deg in the three Euclid Deep Fields (North, South, and Fornax).
 DR1 also includes several photometric redshift and instrument calibration fields, such as COSMOS, CDFS, and AEGIS.
-It follows Quick Release 1 (Q1), which covered four much smaller fields; all of the DR1 data, including the areas observed in Q1, have been reprocessed with updated pipelines and calibrations.
+It follows Quick Release 1 (Q1), which covered four much smaller fields (Anahita: I am not sure what this sentence means? Q1 covered the deep fields+some additional like Darkcloud); all of the DR1 data, including the areas observed in Q1, have been reprocessed with updated pipelines and calibrations.
 
 Among the data products included in DR1 are the Level 2 MER mosaics.
 These are multiwavelength mosaics created from images taken with the Euclid instruments (VIS and NISP), as well as a variety of ground-based surveys (DES, CFIS, Pan-STARRS, and HSC-based surveys) that provide the u, g, r, i, and z bands.
@@ -84,7 +84,7 @@ DR1 MER mosaics come in two kinds of tiles, which IRSA serves as two separate co
 
 The deep fields are also covered by wide tiles, and because they have been observed many times, these wide tiles have **several mosaics in every band**.
 Only one is the official wide survey mosaic; the others are each built from a single pass over the deep field.
-The `PPLANID` keyword in the FITS header tells them apart: the official mosaic has `DATA_RELEASE` in it, the others `DATA_RELEASE_DEEP`.
+The `PPLANID` keyword in the FITS header tells them apart: the official wide survey mosaic has `DATA_RELEASE` in it, the others `DATA_RELEASE_DEEP`.
 
 +++
 
@@ -134,6 +134,13 @@ import sep
 Irsa.sia_url = 'https://irsadev.ipac.caltech.edu/SIA'
 ```
 
+##Anahita
+
+The original notebook also used Irsa.list_collections(filter='euclid') to list the availbale collections. I think it is useful for users. But i guess you
+removed it. Is it because you were think we can have that in another notebook where we explain different catalogs, prodcuts?
+
++++
+
 ## 1. Search for multiwavelength Euclid DR1 MER mosaics in the Euclid Deep Field North
 Below we set a search radius of 10 arcsec around a position in the Euclid Deep Field North, an area covered by both deep and wide tiles.
 
@@ -163,6 +170,12 @@ These tables list all MER mosaic images available in this search position. These
 
 Note that there are various image types are returned as well, we filter out the `science` images from these:
 
++++
+
+##Anahita
+
+isn't it better to call this deep_science_images to be consistent? an updated comment: I think we shoud, because as we go further down in the notebook, i needed to remind myself that this is for deep not all science images.
+
 ```{code-cell} ipython3
 science_images = deep_table[deep_table['dataproduct_subtype'] == 'science']
 wide_science_images = wide_table[wide_table['dataproduct_subtype'] == 'science']
@@ -177,8 +190,9 @@ for name, images in [('Deep', science_images), ('Wide', wide_science_images)]:
     print(f'{name} tiles and their number of VIS mosaics:', dict(zip(tile_ids.tolist(), n_vis.tolist())))
 ```
 
-Each deep tile has a single VIS mosaic, while the wide tiles have several.
-For the deep tile, we keep the one whose center is closest to our position:
+We see that each deep tile has a single VIS mosaic, while the wide tiles have several.
+
+Now among the deep tiles, we keep the one whose center is closest to our position:
 
 ```{code-cell} ipython3
 tile_centers = SkyCoord(science_images['s_ra'], science_images['s_dec'], unit='deg')
@@ -214,6 +228,10 @@ wide_science_images['s3_fpath'] = [get_s3_fpath(row['cloud_access']) for row in 
 
 To find the official wide survey VIS mosaic, we read the `PPLANID` keyword from the header of each wide VIS mosaic returned by our search.
 Reading only the header with a small block size avoids downloading the large image data.
+
+
+##Anahita:
+user may not know why there is more than one mosaic. you may want to add why?
 
 ```{code-cell} ipython3
 s3 = s3fs.S3FileSystem(anon=True)
@@ -291,8 +309,8 @@ Uncomment the code below to plot an image of the entire field of view of the MER
 
 ```{code-cell} ipython3
 # # Full MER mosaic, may take a minute for python to create this image
-# plt.imshow(im_mer_irsa, cmap='gray', origin='lower', norm=ImageNormalize(im_mer_irsa, interval=PercentileInterval(99.9), stretch=AsinhStretch()))
-# colorbar = plt.colorbar()
+plt.imshow(im_mer_irsa, cmap='gray', origin='lower', norm=ImageNormalize(im_mer_irsa, interval=PercentileInterval(99.9), stretch=AsinhStretch()))
+colorbar = plt.colorbar()
 ```
 
 ## 5. Create multiwavelength Euclid DR1 MER cutouts of a region of interest
@@ -315,6 +333,14 @@ science_images['filters']
 ```
 
 ## 6. Define cutout parameters for a smaller region of interest
+
++++
+
+##Anahita
+
+Is thereany max limit for these cut outs?
+
+Also this cell is taking a long time for for 1 arcmin radius. maybe we should have a note for users.
 
 ```{code-cell} ipython3
 ######################## User defined section ############################
@@ -400,6 +426,8 @@ Let's plot the same region in all of the VIS mosaics of the wide tile: first the
 All of them are in the same units, so we display them with the same linear stretch from -2 to +5 times the sky noise of the official wide mosaic.
 This makes the noise visible: the wide mosaics look grainy, while the deep mosaic is smoother and reveals more faint sources.
 The sky noise of each mosaic, measured with sigma clipping, is given in the panel titles.
+
+##ANAHITA: same warning for users to know that this cell takes a very long time to run
 
 ```{code-cell} ipython3
 filt_index = np.where(science_images['filters'] == 'VIS')[0][0]
@@ -522,3 +550,7 @@ for i in range(len(sources_thr)):
 **Updated**: 2026-10-05
 
 **Contact:** [the IRSA Helpdesk](https://irsa.ipac.caltech.edu/docs/help_desk.html) with questions or reporting problems.
+
+```{code-cell} ipython3
+
+```

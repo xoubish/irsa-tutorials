@@ -1,25 +1,25 @@
 ---
+authors:
+- name: Tiffany Meshkat
+- name: Anahita Alavi
+- name: Anastasia Laity
+- name: Andreas Faisst
+- name: Brigitta Sipőcz
+- name: Dan Masters
+- name: Harry Teplitz
+- name: Jaladh Singhal
+- name: Shoubaneh Hemmati
+- name: Vandana Desai
 jupytext:
   text_representation:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.16.7
+    jupytext_version: 1.19.6
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
-authors:
-  - name: Tiffany Meshkat
-  - name: Anahita Alavi
-  - name: Anastasia Laity
-  - name: Andreas Faisst
-  - name: Brigitta Sipőcz
-  - name: Dan Masters
-  - name: Harry Teplitz
-  - name: Jaladh Singhal
-  - name: Shoubaneh Hemmati
-  - name: Vandana Desai
 ---
 
 # Euclid DR1: MER Catalogs
@@ -50,16 +50,18 @@ By the end of this tutorial, you will:
 
 ## Introduction
 
-+++
+```{raw-cell}
+
+```
 
 Euclid launched in July 2023 as a European Space Agency (ESA) mission with involvement by NASA.
 The primary science goals of Euclid are to better understand the composition and evolution of the dark Universe.
 The Euclid mission is providing space-based imaging and spectroscopy as well as supporting ground-based imaging to achieve these primary goals.
-These data will be archived by multiple global repositories, including IRSA, where they will support transformational work in many areas of astrophysics.
+These data are archived by multiple global repositories, including IRSA, where they will support transformational work in many areas of astrophysics.
 
-Euclid Data Release 1 (DR1) comprises about 1900 sq deg of imaging, spectroscopy, and catalogs from the Euclid Wide Survey (EWS), which will eventually cover about 14,000 sq deg, and from the Euclid Deep Survey (EDS), which covers about 63 sq deg in the three Euclid Deep Fields (North, South, and Fornax).
+Euclid Data Release 1 (DR1) comprises about 1900 sq deg of imaging, spectroscopy, and catalogs from the Euclid Wide Survey (EWS), which will eventually cover about 14,000 sq deg, and from the Euclid Deep Survey (EDS), which covers about 53 sq deg in the three Euclid Deep Fields (North, South, and Fornax).
 DR1 also includes several photometric redshift and instrument calibration fields, such as COSMOS, CDFS, and AEGIS.
-It follows Quick Release 1 (Q1), which covered four much smaller fields; all of the DR1 data, including the areas observed in Q1, have been reprocessed with updated pipelines and calibrations.
+It follows Quick Release 1 (Q1), which covered four much smaller fields (Anahita: I am not sure what this sentence means? Q1 covered the deep fields+some additional like Darkcloud); all of the DR1 data, including the areas observed in Q1, have been reprocessed with updated pipelines and calibrations.
 
 Among the data products included in DR1 are the MER catalogs.
 The MER processing detects sources on the VIS and NISP mosaics (see the MER mosaics notebook) and measures their photometry in the Euclid VIS, Y, J, H bands and in the accompanying ground-based u, g, r, i, z bands, along with other basic measurements, like size and shape.
@@ -152,6 +154,7 @@ We use the Wide Survey table. To use another one of the four DR1 MER tables desc
 
 ```{code-cell} ipython3
 table_mer = 'euclid_dr1_mer_catalogue_wide_survey'
+#table_mer = 'euclid_dr1_mer_catalogue_deep_survey'
 ```
 
 ### Learn some information about the MER catalog:
@@ -183,6 +186,12 @@ Each DR1 MER catalog table contains 480 columns, below are a few highlights:
 
 +++
 
+## Anahita
+
+we might want to say that if users do the deep survey rather than the wide, then they may get time out error from IRSA, unless they do a small search radius as Keunho found.
+
++++
+
 ## 2. Search the MER catalog around a position
 
 We start with all of the sources within 0.5 deg of a position in the Wide Survey.
@@ -194,7 +203,10 @@ The `CONTAINS` and `CIRCLE` functions select the sources in a circle on the sky.
 
 ```{code-cell} ipython3
 coord = SkyCoord(ra=90.7299, dec=-45.3529, unit='deg')
-search_radius = 0.5 * u.deg
+
+#coord = SkyCoord(ra=273.1670, dec=64.3687, unit='deg')
+
+search_radius = 0.05 * u.deg
 
 # Template-fitting fluxes in the Euclid NIR bands and in all of the ground-based bands
 flux_cols = ([f'flux_{band}_templfit' for band in 'yjh'] + [f'flux_vis_to_{band}_templfit' for band in 'yjh']
