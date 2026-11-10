@@ -1,27 +1,27 @@
 ---
+authors:
+- name: Tiffany Meshkat
+- name: Anahita Alavi
+- name: Anastasia Laity
+- name: Andreas Faisst
+- name: Brigitta Sipőcz
+- name: Dan Masters
+- name: Harry Teplitz
+- name: Jaladh Singhal
+- name: Shoubaneh Hemmati
+- name: Vandana Desai
+- name: Troy Raen
+- name: Jessica Krick
 jupytext:
   text_representation:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.18.1
+    jupytext_version: 1.19.6
 kernelspec:
   name: python3
-  display_name: python3
+  display_name: Python 3 (ipykernel)
   language: python
-authors:
-  - name: Tiffany Meshkat
-  - name: Anahita Alavi
-  - name: Anastasia Laity
-  - name: Andreas Faisst
-  - name: Brigitta Sipőcz
-  - name: Dan Masters
-  - name: Harry Teplitz
-  - name: Jaladh Singhal
-  - name: Shoubaneh Hemmati
-  - name: Vandana Desai
-  - name: Troy Raen
-  - name: Jessica Krick
 ---
 
 # Euclid DR1: SIR 1D Spectra
@@ -213,6 +213,13 @@ spectrum_files = find_spectra(object_id)
 spectrum_files
 ```
 
+## Anahita:
+
+why is this returning two urls?are these red and blue grism spectra?
+If so, we should explain it to clarify. it can be confusing for new users.
+
++++
+
 ```{note}
 IRSA's Simple Spectral Access (SSA) service will also serve the DR1 SIR 1D spectra, which will allow searching for them by position; this notebook will be updated when it is available.
 ```
@@ -257,6 +264,8 @@ def bad_flux_bins(spectrum):
 
 Let's look at the spectrum with the most usable flux bins.
 Each row of the table is one flux bin:
+
+##Anahita: I am not sure why we do that. or at least it is not clear. we can clarify that there are two spectrum, for red and blue grisms, for plotting let's look at the one with the most usable bins as an "example". Because the way it is now , it feels that they always need to do that.
 
 ```{code-cell} ipython3
 spectrum = max(spectra, key=lambda spectrum: np.sum(~bad_flux_bins(spectrum)))
